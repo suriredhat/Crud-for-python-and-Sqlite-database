@@ -1,0 +1,11 @@
+$ git config --global user.email "suriredhat@gmail.com"
+
+$ git config --global user.name "Surinder Kumar"
+
+
+$ git init
+
+Initialized empty Git repository in E:/PythonFirebase/sqlitePython/.git/
+
+
+

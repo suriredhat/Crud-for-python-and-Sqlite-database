@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="static/css/bootstrap.css"/>
+  
+</head>
+<body>
+    <header >
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+                <div class="container">
+          <a class="navbar-brand" href="#">Sqlite Crud</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
+        </div>
+        </nav>
+      </header>
+      <br>
+      <br>
+      <br>
+      
+      
+
+<div class="container" style="min-height: 500px">
+  <div class="row">
+      <button class="btn btn-success" data-toggle="modal" data-target="#myModalAdd">Add New Shop</button>
+      <br>
+  <table class="table table-bordered" id="mytable">
+     <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Duration</th>
+      <th scope="col">Fees</th>
+       <th>Delete</th>
+      <th>Edit</th>
+    
+    </tr>
+  </thead>
+  <tbody>
+  
+    {% for rows in Records:  %}
+    <tr>
+        <td>{{rows[0]}}</td>
+        <td>{{rows[1]}}</td>
+        <td>{{rows[2]}}</td>
+        <td>{{rows[3]}}</td>
+     
+      <td>
+      <a href="javascript:void(0);" class="btn btn-sm btn-danger delete" data-id="{{rows[0]}}" >Delete</a></td>
+      <td> 
+        <a href="javascript:void(0);" class="btn btn-sm btn-info edit" data-id="{{rows[0]}}" data-cname="{{rows[1]}}" data-duration="{{rows[2]}}" data-fee="{{rows[3]}}">Edit</a>
+      </td>
+  
+     
+  
+    </tr>
+
+    {% endfor %}
+  </tbody>
+  </table>
+
+
+  <nav aria-label="Page navigation example">
+   
+      <ul class="pagination">
+          {% if (pageBack<1)  %}
+              <li class="page-item disabled"><a href="?Fv={{ pageBack }}"  class="page-link">&laquo;</a></li>
+              {% else %}
+              <li class="page-item"><a href="?Fv={{ pageBack }}"   class="page-link">&laquo;</a></li>
+              
+          {% endif %}
+          <li class="page-item"><a class="page-link">Total Pages: {{PageCount}}</a></li>
+          {% if (PageNext <= PageCount)  %}
+              <li class="page-item"><a href="?Fv={{ PageNext }}"  class="page-link">&raquo;</a></li>
+              {% else %}
+              <li class="page-item disabled"><a href="?Fv={{ PageNext }}"   class="page-link">&raquo;</a></li>
+              
+          {% endif %}
+
+
+      </ul>
+  
+    </nav>
+
+   
+             
+    <form action="/crud/create" method="post">
+        <div class="modal fade" id="myModalAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+           <div class="modal-content">
+             <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLabel">Add New Course</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                 <span aria-hidden="true">&times;</span>
+               </button>
+             </div>
+             <div class="modal-body">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+               <div class="form-group">
+                <label>Course name</label>
+                   <input type="text" id="inscname" name="inscname" class="form-control" placeholder="Course Name" required>
+               </div>
+
+               <div class="form-group">
+                   <label>Duration</label>
+                   <input type="text" id="insduration" name="insduration" class="form-control" placeholder="Duration" required>
+               </div>
+
+               <div class="form-group">
+                <label>Fees</label>
+                <input type="number" id="insfee" name="insfee" class="form-control" placeholder="fee" required>
+               </div>
+             </div>
+             <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+               <button type="submit" class="btn btn-primary">Save</button>
+             </div>
+           </div>
+         </div>
+        </div>
+</form>
+
+
+<form id="del-user-form" action="/crud/delete" method="post">
+       <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+             <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title" id="myModalLabel">Delete Shop</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                 </div>
+                 <div class="modal-body">
+                         <strong>Are You Sure To Delete This Data?</strong>
+                 </div>
+                 <div class="modal-footer">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                      <input type="hidden" name="delc_id" class="form-control delc_id" required>
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-success">Delete</button>
+                 </div>
+              </div>
+          </div>
+       </div>
+   </form>
+
+   <form action="/crud/recupdt" method="post">
+       <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit Product</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <div class="form-group">
+               <label>Course name</label>
+                  <input type="text" id="ucname" name="ucname" class="cname form-control" placeholder="Course Name" required>
+              </div>
+
+              <div class="form-group">
+                  <label>Duration</label>
+                  <input type="text" id="uduration" name="uduration" class="duration form-control" placeholder="Duration" required>
+              </div>
+
+              <div class="form-group">
+               <label>Fees</label>
+               <input type="number" id="ufee" name="ufee" class="fee form-control" placeholder="fee" required>
+              </div>
+            </div>
+         
+            <div class="modal-footer">
+              <input type="hidden" id="ucid" name="ucid" class="c_id">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+          </div>
+        </div>
+       </div>
+  </form>
+
+
+
+
+
+
+    
+  </tbody>
+  </table>
+  
+
+  <!--optionaljavascript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="static/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="static/js/popper.min.js" ></script>
+    <script src="static/js/bootstrap.min.js"></script>
+
+
+    <script>
+      $(document).ready(function(){
+        //showing data to modal for edit record
+        $('#mytable').on('click','.edit',function(){
+          var c_id = $(this).data('id');
+          var cname = $(this).data('cname');
+          var duration = $(this).data('duration');
+          var fee = $(this).data('fee');
+          
+          $('#EditModal').modal('show');
+          $('.cname').val(cname);
+          $('.duration').val(duration);
+          $('.c_id').val(c_id
+          );
+          $('.fee').val(fee);
+        });
+  
+        //showing modal for delete record
+        $('#mytable').on('click','.delete',function(){
+          var c_id = $(this).data('id');
+          $('#DeleteModal').modal('show');
+          $('.delc_id').val(c_id);
+        });
+  
+  
+        //showing modal for update record
+        $('#mytable').on('click','.update',function(){
+          var shop_id = $(this).data('id');
+          $('#UpdateModal').modal('show');
+          $('.upduser_id').val(shop_id);
+        });
+  
+  
+        $('#mytable').on('click','.items',function(){
+          var shop_id = $(this).data('id');
+          $('#UpdateModal').modal('show');
+          $('.c_id').val(shop_id);
+        });
+  
+  
+  
+  
+        
+  
+      });
+  </script>
+</body>
+</html>
